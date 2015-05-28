@@ -11,7 +11,7 @@ object Build extends Build {
       name                  := "api",
       organization          := "com.gamedation",
       version               := "0.1.0",
-      scalaVersion          := "2.11.4",
+      scalaVersion          := "2.11.6",
       licenses              += ("MIT", url("http://opensource.org/licenses/MIT")),
       scalacOptions         += "-feature",
       scalacOptions         += "-deprecation",
@@ -23,7 +23,8 @@ object Build extends Build {
       libraryDependencies   += "com.plasmaconduit"     %% "edge"                    % "0.22.0",
       libraryDependencies   += "mysql"                  % "mysql-connector-java"   % "5.1.33",
       libraryDependencies   += "com.typesafe.slick"    %% "slick"                  % "2.1.0",
-      libraryDependencies   += "org.flywaydb"           % "flyway-core"             % "3.2.1"
+      libraryDependencies   += "org.flywaydb"           % "flyway-core"             % "3.2.1",
+      libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4"
     )
 
 }
