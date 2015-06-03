@@ -24,7 +24,7 @@ object Build extends Build {
       libraryDependencies   += "mysql"                  % "mysql-connector-java"   % "5.1.33",
       libraryDependencies   += "com.typesafe.slick"    %% "slick"                  % "2.1.0",
       libraryDependencies   += "org.flywaydb"           % "flyway-core"             % "3.2.1",
-      libraryDependencies += "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4"
+      libraryDependencies += "org.scala-lang.modules"  %% "scala-parser-combinators" % "1.0.4"
     )
 
 }

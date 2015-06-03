@@ -17,16 +17,16 @@ object GameJoltLinkParser extends RegexParsers {
     case (category ~ _) => category
   }
 
-  def name: Parser[String] = "[^:\\r\\n/]+".r ~ opt("/") ^^ {
+  def name: Parser[String] = "[^:\\r\\n/]+".r ~ "/" ^^ {
     case (name ~ _) => name
   }
 
-  def id: Parser[Int] = "[0-9]+".r ~ opt("/") ^^ {
-    case (gameId ~ _) => gameId.toInt
+  def id: Parser[Int] = "[0-9]+".r ^^ {
+    case (gameId) => gameId.toInt
   }
 
-  def fullParser: Parser[GameJoltLink] = protocol ~ domain ~ category ~ name ~ id ^^ {
-    case(_ ~ _ ~ c ~ n ~ gid) => GameJoltLink(gid, n, c)
+  def fullParser: Parser[GameJoltLink] = protocol ~ domain ~ category ~ name ~ id ~ opt("/") ^^ {
+    case(_ ~ _ ~ c ~ n ~ gid ~ _) => GameJoltLink(gid, n, c)
   }
 
   def apply(url: String): Validation[String, GameJoltLink] = {
