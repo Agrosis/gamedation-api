@@ -11,7 +11,7 @@ object SteamLinkParser extends RegexParsers {
     case p => p
   }
 
-  def domain: Parser[String] = "steampowered.com/app/"
+  def domain: Parser[String] = "store.steampowered.com/app/"
 
   def id: Parser[Int] = "[0-9]+".r ^^ {
     case (gameId) => gameId.toInt
