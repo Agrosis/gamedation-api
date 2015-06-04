@@ -1,8 +1,8 @@
 package com.gamedation.api
 
-import com.gamedation.api.controllers.{ProcessLink, Index}
+import com.gamedation.api.controllers.{Submit, ProcessLink, Index}
 import com.plasmaconduit.framework.PlasmaConduit
-import com.plasmaconduit.framework.routes.containers.{HttpRoutes, HttpGetMethodRoutes}
+import com.plasmaconduit.framework.routes.containers.{HttpPutMethodRoutes, HttpRoutes, HttpGetMethodRoutes}
 import com.plasmaconduit.framework.routes.destinations.HttpPathRoute
 
 import scala.util.matching.Regex
@@ -13,6 +13,9 @@ object Gamedation {
     HttpGetMethodRoutes(
       HttpPathRoute("/", Index()),
       HttpPathRoute(new Regex("/link"), ProcessLink())
+    ),
+    HttpPutMethodRoutes(
+      HttpPathRoute("/submit", Submit())
     )
   )
 
