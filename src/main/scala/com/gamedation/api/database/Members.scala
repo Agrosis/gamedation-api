@@ -4,7 +4,7 @@ import scala.slick.driver.MySQLDriver.simple._
 
 final case class DbMember(id: Long, status: Int, username: String, password: String, email: String, joined: Long)
 
-final case class Members(tag: Tag) extends Table[DbMember](tag, "members") {
+final case class Members(tag: Tag) extends Table[DbMember](tag, "members") with Database {
 
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
   def status = column[Int]("status")
