@@ -45,6 +45,7 @@ trait Database {
 
     val comments = TableQuery[Comments]
     val games = TableQuery[Games]
+    val gameImages = TableQuery[GameImages]
     val members = TableQuery[Members]
     val upvotes = TableQuery[Upvotes]
 

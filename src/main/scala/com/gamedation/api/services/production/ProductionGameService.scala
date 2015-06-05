@@ -1,6 +1,7 @@
 package com.gamedation.api.services.production
 
-import com.gamedation.api.models.Game
+import com.gamedation.api.database.{DbGameImage, DbGame}
+import com.gamedation.api.models.{GamePlatforms, GameSite, Game}
 import com.gamedation.api.services.interfaces.GameServiceComponent
 
 import scala.slick.driver.MySQLDriver.simple._
@@ -12,11 +13,25 @@ trait ProductionGameService extends GameServiceComponent { this: ProductionServi
   final class GameServiceImpl extends GameService {
 
     override def getGameById(id: Long): Option[Game] = database { implicit session =>
-      None
+      val q = for {
+        g <- tables.games
+      } yield g
+
+      for (
+        g <- q.firstOption;
+        member <- members.getMemberById(g.poster)
+      ) yield {
+        Game(g.id, GameSite.fromInt(g.site), g.link, g.name, g.description, GamePlatforms(g.windows, g.mac, g.linux, g.browser, g.iOS, g.android), getImages(g.id), g.points, member)
+      }
     }
 
-    override def createGame(): Option[Game] = database { implicit session =>
-      None
+    override def createGame(link: String, name: String, description: String, windows: Boolean, mac: Boolean, linux: Boolean, browser: Boolean, iOS: Boolean, android: Boolean, images: List[String], poster: Long, site: GameSite): Option[Game] = database { implicit session =>
+      val id = (tables.games returning tables.games.map(_.id)) += DbGame(0, link, name, description, windows, mac, linux, browser, iOS, android, 0, poster, site.toInt, System.currentTimeMillis())
+      voteGame(id, poster)
+
+      images.foreach(link => addImage(id, link))
+
+      getGameById(id)
     }
 
     override def voteGame(game: Long, member: Long): Option[Int] = database { implicit session =>
@@ -32,6 +47,20 @@ trait ProductionGameService extends GameServiceComponent { this: ProductionServi
       } yield u.points
 
       p.firstOption.map(x => p.update(x + c))
+    }
+
+    override def getImages(game: Long): List[String] = database { implicit session =>
+      val q = for {
+        i <- tables.gameImages if i.gameId === game
+      } yield i.link
+      q.list
+    }
+
+    override def addImage(game: Long, link: String): Option[Long] = database { implicit session =>
+      if(tables.games.filter(_.id === game).exists.run)
+        Some(((tables.gameImages) returning tables.games.map(_.id)) += DbGameImage(0, game, link))
+      else
+        None
     }
 
   }
