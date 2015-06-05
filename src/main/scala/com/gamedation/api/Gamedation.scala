@@ -27,7 +27,7 @@ object Gamedation {
   )
 
   def main(args: Array[String]) = {
-    Environment.getEnvironment().applyMigrations() match {
+    Environment.getEnvironment().initialize() match {
       case Success(_) => {
         val server = PlasmaConduit(
           port         = 1350,
