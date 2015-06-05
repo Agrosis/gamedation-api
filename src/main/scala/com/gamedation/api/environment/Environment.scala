@@ -1,6 +1,8 @@
 package com.gamedation.api.environment
 
-trait Environment
+import com.gamedation.api.services.interfaces.ServicesComponent
+
+trait Environment extends ServicesComponent
 
 object Environment {
 
