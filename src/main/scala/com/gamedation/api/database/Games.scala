@@ -7,7 +7,7 @@ final case class DbGame(id: Long, link: String, name: String, description: Strin
 final case class Games(tag: Tag) extends Table[DbGame](tag, "games") with Database {
 
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
-  def link = column[String]("link")
+  def link = column[String]("link", O.DBType("TEXT"))
   def name = column[String]("name")
   def description = column[String]("description")
   def windows = column[Boolean]("windows")
