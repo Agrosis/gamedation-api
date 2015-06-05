@@ -1,0 +1,3 @@
+package com.gamedation.api.models
+
+final case class Game(id: Long, link: GameLink, name: String, description: String, platforms: GamePlatforms, images: List[String])

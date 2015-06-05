@@ -1,11 +1,13 @@
 package com.gamedation.api
 
-import com.gamedation.api.controllers.{Submit, ProcessLink, Index}
+import com.gamedation.api.controllers.game.{Upvote, Submit}
+import com.gamedation.api.controllers.{ProcessLink, Index}
 import com.plasmaconduit.framework.PlasmaConduit
-import com.plasmaconduit.framework.routes.containers.{HttpPutMethodRoutes, HttpRoutes, HttpGetMethodRoutes}
+import com.plasmaconduit.framework.routes.containers.{HttpPostMethodRoutes, HttpPutMethodRoutes, HttpRoutes, HttpGetMethodRoutes}
 import com.plasmaconduit.framework.routes.destinations.HttpPathRoute
 
 import scala.util.matching.Regex
+import com.plasmaconduit.framework.routes.PathRegexes._
 
 object Gamedation {
 
@@ -14,8 +16,11 @@ object Gamedation {
       HttpPathRoute("/", Index()),
       HttpPathRoute(new Regex("/link"), ProcessLink())
     ),
+    HttpPostMethodRoutes(
+      HttpPathRoute(new Regex(s"/game/upvote/$number", "gameid"), Upvote())
+    ),
     HttpPutMethodRoutes(
-      HttpPathRoute("/submit", Submit())
+      HttpPathRoute("/game/submit", Submit())
     )
   )
 

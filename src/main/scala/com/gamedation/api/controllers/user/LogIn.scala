@@ -1,10 +1,10 @@
-package com.gamedation.api.controllers
+package com.gamedation.api.controllers.user
 
 import com.plasmaconduit.conveyance.Box
 import com.plasmaconduit.framework.{HttpResponse, HttpRequest}
 import com.plasmaconduit.framework.mvc.Controller
 
-final case class Submit() extends Controller {
+final case class LogIn() extends Controller {
 
   override def action(implicit request: HttpRequest): Box[Throwable, HttpResponse] = ???
 
