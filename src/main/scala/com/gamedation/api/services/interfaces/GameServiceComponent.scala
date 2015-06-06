@@ -14,9 +14,13 @@ trait GameServiceComponent {
 
     def voteGame(game: Long, member: Long): Option[Int]
 
+    def hasUpvoted(game: Long, member: Long): Boolean
+
     def getImages(game: Long): List[String]
 
     def addImage(game: Long, link: String): Option[Long]
+
+    def getGamesFor(time: Long): List[Game]
 
   }
 

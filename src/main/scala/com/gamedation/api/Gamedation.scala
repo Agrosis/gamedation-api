@@ -1,8 +1,9 @@
 package com.gamedation.api
 
-import com.gamedation.api.controllers.game.{Upvote, Submit}
-import com.gamedation.api.controllers.{ProcessLink, Index}
+import com.gamedation.api.controllers.game.{GetGame, Upvote, Submit}
+import com.gamedation.api.controllers.{Games, ProcessLink, Index}
 import com.gamedation.api.environment.Environment
+import com.gamedation.api.models.Game
 import com.plasmaconduit.framework.PlasmaConduit
 import com.plasmaconduit.framework.routes.containers.{HttpPostMethodRoutes, HttpPutMethodRoutes, HttpRoutes, HttpGetMethodRoutes}
 import com.plasmaconduit.framework.routes.destinations.HttpPathRoute
@@ -16,10 +17,12 @@ object Gamedation {
   val routes = HttpRoutes(
     HttpGetMethodRoutes(
       HttpPathRoute("/", Index()),
-      HttpPathRoute(new Regex("/link"), ProcessLink())
+      HttpPathRoute("/link", ProcessLink()),
+      HttpPathRoute(new Regex(s"/game/$number", "gameId"), GetGame()),
+      HttpPathRoute("/games", Games())
     ),
     HttpPostMethodRoutes(
-      HttpPathRoute(new Regex(s"/game/upvote/$number", "gameid"), Upvote())
+      HttpPathRoute(new Regex(s"/game/upvote/$number", "gameId"), Upvote())
     ),
     HttpPutMethodRoutes(
       HttpPathRoute("/game/submit", Submit())

@@ -2,10 +2,16 @@ package com.gamedation.api.models
 
 sealed trait GameSite {
 
-  def toInt: Int = this match {
+  def toInt(): Int = this match {
     case Other => 1
     case GameJolt => 2
     case Steam => 3
+  }
+
+  override def toString(): String = this match {
+    case Other => "other"
+    case GameJolt => "gamejolt"
+    case Steam => "steam"
   }
 
 }
