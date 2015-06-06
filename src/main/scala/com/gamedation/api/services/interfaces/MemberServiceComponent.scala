@@ -10,6 +10,14 @@ trait MemberServiceComponent {
 
     def getMemberById(id: Long): Option[Member]
 
+    def getMemberByUsername(username: String): Option[Member]
+
+    def getMemberByEmail(email: String): Option[Member]
+
+    def authenticate(email: String, password: String): Boolean
+
+    def register(username: String, password: String, email: String): Option[Member]
+
   }
 
 }
