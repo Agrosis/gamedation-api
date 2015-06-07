@@ -22,6 +22,8 @@ trait GameServiceComponent {
 
     def getGamesFor(time: Long): List[Game]
 
+    def getLatestGames(): List[Game]
+
   }
 
 }

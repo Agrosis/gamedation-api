@@ -10,7 +10,15 @@ object InjectedAction {
   final case class InjectedRequest(env: Environment, user: User, private val request: HttpRequest)
 
   def apply(action: InjectedRequest => Box[Throwable, HttpResponse])(implicit request: HttpRequest): Box[Throwable, HttpResponse] = {
-    action(InjectedRequest(Environment.getEnvironment(), Guest, request))
+    val env = Environment.getEnvironment()
+
+    val user = for (
+      token <- request.session.get("token");
+      email <- env.members.validateToken(token).toOption;
+      member <- env.members.getMemberByEmail(email)
+    ) yield member
+
+    action(InjectedRequest(env, user.getOrElse(Guest), request))
   }
 
 }

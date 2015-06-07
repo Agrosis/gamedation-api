@@ -4,7 +4,7 @@ import com.gamedation.api.models.{Other, Steam, GameJolt, GameSite}
 import com.gamedation.api.parsers.{SteamLinkParser, GameJoltLinkParser}
 import com.gamedation.api.{PayloadSuccess, PayloadError}
 import com.gamedation.api.actions.{Unauthenticated, InjectedAction}
-import com.gamedation.api.forms.SubmitGameForm
+import com.gamedation.api.validators.SubmitGameForm
 import com.plasmaconduit.conveyance.Box
 import com.plasmaconduit.framework.mvc.Controller
 import com.plasmaconduit.framework.parsers.JsonBodyParser

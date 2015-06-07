@@ -1,10 +1,10 @@
-package com.gamedation.api.controllers
+package com.gamedation.api.controllers.game
 
 import com.gamedation.api.PayloadSuccess
 import com.gamedation.api.actions.InjectedAction
 import com.plasmaconduit.conveyance.Box
-import com.plasmaconduit.framework.{HttpResponse, HttpRequest}
 import com.plasmaconduit.framework.mvc.Controller
+import com.plasmaconduit.framework.{HttpRequest, HttpResponse}
 import com.plasmaconduit.json.JsObject
 
 final case class Games() extends Controller {

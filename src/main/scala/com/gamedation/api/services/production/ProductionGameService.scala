@@ -81,6 +81,18 @@ trait ProductionGameService extends GameServiceComponent { this: ProductionServi
       })
     }
 
+    override def getLatestGames(): List[Game] = database { implicit session =>
+      val q = for {
+        g <- tables.games if g.submitted >= (System.currentTimeMillis() - 604800000)
+      } yield g
+
+      q.sortBy(_.id.desc).list.flatMap(g => {
+        members.getMemberById(g.poster).map(p => {
+          Game(g.id, GameSite.fromInt(g.site), g.link, g.name, g.description, GamePlatforms(g.windows, g.mac, g.linux, g.browser, g.iOS, g.android), getImages(g.id), g.points, p)
+        })
+      })
+    }
+
   }
 
 }

@@ -1,4 +1,4 @@
-package com.gamedation.api.forms
+package com.gamedation.api.validators
 
 import com.plasmaconduit.json.{JsObject, JsValue, JsReader}
 import com.plasmaconduit.validation.{Success, Failure, Validation}
