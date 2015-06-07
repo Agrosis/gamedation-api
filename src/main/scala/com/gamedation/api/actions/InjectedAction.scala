@@ -13,7 +13,7 @@ object InjectedAction {
     val env = Environment.getEnvironment()
 
     val user = for (
-      token <- request.session.get("token");
+      token <- request.headers.get("Authorization");
       email <- env.members.validateToken(token).toOption;
       member <- env.members.getMemberByEmail(email)
     ) yield member

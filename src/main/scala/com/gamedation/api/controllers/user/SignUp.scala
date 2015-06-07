@@ -19,8 +19,9 @@ final case class SignUp() extends Controller {
           request.env.members.register(form.username, form.password, form.email) match {
             case Some(member) => {
               PayloadSuccess(JsObject(
-                "member" -> member.toJson()
-              ), Map("token" -> request.env.members.createToken(member)))
+                "member" -> member.toJson(),
+                "token" -> request.env.members.createToken(member)
+              ))
             }
             case None => PayloadError("A member with that username or e-mail already exists.")
           }

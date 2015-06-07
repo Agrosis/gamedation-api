@@ -1,6 +1,7 @@
 package com.gamedation.api
 
 import com.gamedation.api.controllers.game.{Games, GetGame, Upvote, Submit}
+import com.gamedation.api.controllers.user.{GetUser, SignOut, SignUp, LogIn}
 import com.gamedation.api.controllers.{Submissions, ProcessLink, Index}
 import com.gamedation.api.environment.Environment
 import com.gamedation.api.models.Game
@@ -20,13 +21,17 @@ object Gamedation {
       HttpPathRoute("/link", ProcessLink()),
       HttpPathRoute(new Regex(s"/game/$number", "gameId"), GetGame()),
       HttpPathRoute("/games", Games()),
-      HttpPathRoute("/games/submissions", Submissions())
+      HttpPathRoute("/games/submissions", Submissions()),
+      HttpPathRoute("/user/get", GetUser())
     ),
     HttpPostMethodRoutes(
-      HttpPathRoute(new Regex(s"/game/upvote/$number", "gameId"), Upvote())
+      HttpPathRoute(new Regex(s"/game/upvote/$number", "gameId"), Upvote()),
+      HttpPathRoute("/user/login", LogIn()),
+      HttpPathRoute("/user/signout", SignOut())
     ),
     HttpPutMethodRoutes(
-      HttpPathRoute("/game/submit", Submit())
+      HttpPathRoute("/game/submit", Submit()),
+      HttpPathRoute("/user/signup", SignUp())
     )
   )
 

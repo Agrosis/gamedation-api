@@ -3,7 +3,7 @@ package com.gamedation.api.controllers.game
 import com.gamedation.api.models.{Other, Steam, GameJolt, GameSite}
 import com.gamedation.api.parsers.{SteamLinkParser, GameJoltLinkParser}
 import com.gamedation.api.{PayloadSuccess, PayloadError}
-import com.gamedation.api.actions.{Unauthenticated, InjectedAction}
+import com.gamedation.api.actions.{Authenticated, InjectedAction}
 import com.gamedation.api.validators.SubmitGameForm
 import com.plasmaconduit.conveyance.Box
 import com.plasmaconduit.framework.mvc.Controller
@@ -15,10 +15,10 @@ import com.plasmaconduit.validation.{Failure, Success}
 final case class Submit() extends Controller {
 
   override def action(implicit req: HttpRequest): Box[Throwable, HttpResponse] = InjectedAction { implicit request =>
-    Unauthenticated { () =>
+    Authenticated { member =>
       JsonBodyParser(req).flatMap(_.as[SubmitGameForm]) match {
         case Success(s: SubmitGameForm) => {
-          val a = request.env.games.createGame(s.link, s.name, s.description, s.windows, s.mac, s.linux, s.browser, s.iOS, s.android, s.images, 1, getSite(s.link))
+          val a = request.env.games.createGame(s.link, s.name, s.description, s.windows, s.mac, s.linux, s.browser, s.iOS, s.android, s.images, member.id, getSite(s.link))
 
           a match {
             case Some(game) => PayloadSuccess(JsObject(

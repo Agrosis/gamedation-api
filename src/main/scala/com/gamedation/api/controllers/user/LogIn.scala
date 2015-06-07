@@ -17,7 +17,9 @@ final case class LogIn() extends Controller {
       JsonBodyParser(req).mapError(_.message).flatMap(_.as[LogInForm]) match {
         case Success(logIn) => {
           request.env.members.authenticate(logIn.email, logIn.password) match {
-            case Some(m) => PayloadSuccess(JsObject(), Map("token" -> request.env.members.createToken(m)))
+            case Some(m) => PayloadSuccess(JsObject(
+              "token" -> request.env.members.createToken(m)
+            ))
             case _ => PayloadError("Invalid e-mail or password.")
           }
         }

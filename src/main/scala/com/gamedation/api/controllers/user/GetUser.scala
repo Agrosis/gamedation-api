@@ -7,11 +7,11 @@ import com.plasmaconduit.framework.{HttpResponse, HttpRequest}
 import com.plasmaconduit.framework.mvc.Controller
 import com.plasmaconduit.json.JsObject
 
-final case class SignOut() extends Controller {
+final case class GetUser() extends Controller {
 
   override def action(implicit req: HttpRequest): Box[Throwable, HttpResponse] = InjectedAction { implicit request =>
-    Authenticated { m =>
-      PayloadSuccess(JsObject())
+    Authenticated { member =>
+      PayloadSuccess(JsObject("user" -> member.toJson()))
     }
   }
 
