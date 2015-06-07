@@ -18,6 +18,7 @@ final case class LogIn() extends Controller {
         case Success(logIn) => {
           request.env.members.authenticate(logIn.email, logIn.password) match {
             case Some(m) => PayloadSuccess(JsObject(
+              "user" -> m.toJson(),
               "token" -> request.env.members.createToken(m)
             ))
             case _ => PayloadError("Invalid e-mail or password.")

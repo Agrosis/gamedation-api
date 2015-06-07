@@ -48,7 +48,10 @@ trait ProductionGameService extends GameServiceComponent { this: ProductionServi
         u <- tables.games if u.id === game
       } yield u.points
 
+
+
       p.firstOption.map(points => p.update(points + change))
+      p.firstOption
     }
 
     override def hasUpvoted(game: Long, member: Long): Boolean = database { implicit session =>

@@ -6,12 +6,10 @@ import com.plasmaconduit.edge.http.Ok
 import com.plasmaconduit.framework.{HttpResponse, HttpRequest}
 import com.plasmaconduit.framework.mvc.Controller
 import com.plasmaconduit.json.JsObject
-import org.mindrot.jbcrypt.BCrypt
 
 final case class Index() extends Controller {
 
   override def action(implicit req: HttpRequest): Box[Throwable, HttpResponse] = InjectedAction { implicit request =>
-    request.env.members.register("Agro", "shadowman123", "agro@jantox.com")
     Ok(JsObject(
       "name" -> "api",
       "version" -> "1.0.0"

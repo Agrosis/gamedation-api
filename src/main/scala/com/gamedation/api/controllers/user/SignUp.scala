@@ -19,7 +19,7 @@ final case class SignUp() extends Controller {
           request.env.members.register(form.username, form.password, form.email) match {
             case Some(member) => {
               PayloadSuccess(JsObject(
-                "member" -> member.toJson(),
+                "user" -> member.toJson(),
                 "token" -> request.env.members.createToken(member)
               ))
             }

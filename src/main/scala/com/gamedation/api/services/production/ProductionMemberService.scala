@@ -58,8 +58,8 @@ trait ProductionMemberService extends MemberServiceComponent { this: ProductionS
 
     override def register(username: String, password: String, email: String): Option[Member] = database { implicit session =>
       if(getMemberByUsername(username).isEmpty && getMemberByEmail(email).isEmpty) {
-        val status: Status = getMemberById(1).map(_ => Admin).getOrElse(Normal)
-        val id = (tables.members returning tables.members.map(_.id)) += DbMember(0, status.toInt, username, BCrypt.hashpw(password, "SALT"), email, System.currentTimeMillis())
+        val status: Status = getMemberById(1).map(_ => Normal).getOrElse(Admin)
+        val id = (tables.members returning tables.members.map(_.id)) += DbMember(0, status.toInt, username, BCrypt.hashpw(password, "$2a$10$tD5ezWLH0hRdvYzZeL5epu"), email, System.currentTimeMillis())
 
         getMemberById(id)
       } else {
