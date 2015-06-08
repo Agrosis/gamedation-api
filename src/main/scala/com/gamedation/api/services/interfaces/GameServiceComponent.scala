@@ -1,6 +1,6 @@
 package com.gamedation.api.services.interfaces
 
-import com.gamedation.api.models.{GameSite, Game}
+import com.gamedation.api.models.{Member, GameSite, Game}
 
 trait GameServiceComponent {
 
@@ -16,6 +16,8 @@ trait GameServiceComponent {
 
     def hasUpvoted(game: Long, member: Long): Boolean
 
+    def getUpvoters(game: Long): List[Long]
+
     def getImages(game: Long): List[String]
 
     def addImage(game: Long, link: String): Option[Long]
@@ -23,6 +25,8 @@ trait GameServiceComponent {
     def getGamesFor(time: Long): List[Game]
 
     def getLatestGames(): List[Game]
+
+    def canUploadGame(member: Member): Boolean
 
   }
 

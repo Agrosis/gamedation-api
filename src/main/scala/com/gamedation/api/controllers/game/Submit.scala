@@ -16,18 +16,22 @@ final case class Submit() extends Controller {
 
   override def action(implicit req: HttpRequest): Box[Throwable, HttpResponse] = InjectedAction { implicit request =>
     Authenticated { member =>
-      JsonBodyParser(req).flatMap(_.as[SubmitGameForm]) match {
-        case Success(s: SubmitGameForm) => {
-          val a = request.env.games.createGame(s.link, s.name, s.description, s.windows, s.mac, s.linux, s.browser, s.iOS, s.android, s.images, member.id, getSite(s.link))
+      if(request.env.games.canUploadGame(member)) {
+        JsonBodyParser(req).flatMap(_.as[SubmitGameForm]) match {
+          case Success(s: SubmitGameForm) => {
+            val a = request.env.games.createGame(s.link, s.name, s.description, s.windows, s.mac, s.linux, s.browser, s.iOS, s.android, s.images, member.id, getSite(s.link))
 
-          a match {
-            case Some(game) => PayloadSuccess(JsObject(
-              "game" -> game.toJson()
-            ))
-            case None => PayloadError("Unable to create game.")
+            a match {
+              case Some(game) => PayloadSuccess(JsObject(
+                "game" -> game.toJson()
+              ))
+              case None => PayloadError("Unable to create game.")
+            }
           }
+          case Failure(_) => PayloadError("Invalid json form data.")
         }
-        case Failure(_) => PayloadError("Invalid json form data.")
+      } else {
+        PayloadError("You can't post anymore games.")
       }
     }
   }

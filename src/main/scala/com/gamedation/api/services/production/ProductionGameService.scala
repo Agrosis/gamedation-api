@@ -1,7 +1,7 @@
 package com.gamedation.api.services.production
 
 import com.gamedation.api.database.{DbUpvote, DbGameImage, DbGame}
-import com.gamedation.api.models.{GamePlatforms, GameSite, Game}
+import com.gamedation.api.models._
 import com.gamedation.api.services.interfaces.GameServiceComponent
 
 import scala.slick.driver.MySQLDriver.simple._
@@ -48,14 +48,19 @@ trait ProductionGameService extends GameServiceComponent { this: ProductionServi
         u <- tables.games if u.id === game
       } yield u.points
 
-
-
       p.firstOption.map(points => p.update(points + change))
       p.firstOption
     }
 
     override def hasUpvoted(game: Long, member: Long): Boolean = database { implicit session =>
       tables.upvotes.filter(u => u.gameId === game && u.memberId === member).exists.run
+    }
+
+    override def getUpvoters(game: Long): List[Long] = database { implicit session =>
+      val q = for {
+        i <- tables.upvotes if i.gameId === game
+      } yield i
+      q.sortBy(_.time.desc).map(_.memberId).list
     }
 
     override def getImages(game: Long): List[String] = database { implicit session =>
@@ -94,6 +99,19 @@ trait ProductionGameService extends GameServiceComponent { this: ProductionServi
           Game(g.id, GameSite.fromInt(g.site), g.link, g.name, g.description, GamePlatforms(g.windows, g.mac, g.linux, g.browser, g.iOS, g.android), getImages(g.id), g.points, p)
         })
       })
+    }
+
+    override def canUploadGame(member: Member): Boolean = database { implicit session =>
+      val q = for {
+        g <- tables.games if g.submitted >= (System.currentTimeMillis() - 86400000) && g.posterId === member.id
+      } yield g
+
+      val n = q.list.size
+      member.status match {
+        case Admin => true
+        case Curator => n < 10
+        case Normal => n < 3
+      }
     }
 
   }

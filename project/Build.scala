@@ -27,7 +27,8 @@ object Build extends Build {
       libraryDependencies   += "org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4",
       libraryDependencies   += "com.plasmaconduit"      %% "json-config"              % "0.1.0",
       libraryDependencies   += "org.mindrot"             % "jbcrypt"                  % "0.3m",
-      libraryDependencies   += "com.plasmaconduit"      %% "jwt"                      % "0.16.0"
+      libraryDependencies   += "com.plasmaconduit"      %% "jwt"                      % "0.16.0",
+      libraryDependencies   += "commons-codec"           % "commons-codec"            % "1.9"
     )
 
 }

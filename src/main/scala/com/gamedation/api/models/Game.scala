@@ -14,6 +14,7 @@ final case class Game(id: Long, site: GameSite, link: String, name: String, desc
     "images" -> images,
     "points" -> points,
     "poster" -> poster.id,
+    "posterAvatar" -> poster.avatar(64),
     "upvoted" -> upvoted
   )
 
