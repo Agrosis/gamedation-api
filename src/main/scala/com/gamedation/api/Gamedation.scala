@@ -1,8 +1,8 @@
 package com.gamedation.api
 
-import com.gamedation.api.controllers.game.{Games, GetGame, Upvote, Submit}
+import com.gamedation.api.controllers.game._
 import com.gamedation.api.controllers.user.{GetUser, SignUp, LogIn}
-import com.gamedation.api.controllers.{Submissions, ProcessLink, Index}
+import com.gamedation.api.controllers.{AdminData, Submissions, ProcessLink, Index}
 import com.gamedation.api.environment.Environment
 import com.plasmaconduit.framework.PlasmaConduit
 import com.plasmaconduit.framework.routes.containers.{HttpPostMethodRoutes, HttpPutMethodRoutes, HttpRoutes, HttpGetMethodRoutes}
@@ -21,7 +21,8 @@ object Gamedation {
       HttpPathRoute(new Regex(s"/game/$number", "gameId"), GetGame()),
       HttpPathRoute("/games", Games()),
       HttpPathRoute("/games/submissions", Submissions()),
-      HttpPathRoute("/user/get", GetUser())
+      HttpPathRoute("/user/get", GetUser()),
+      HttpPathRoute("/admin/data", AdminData())
     ),
     HttpPostMethodRoutes(
       HttpPathRoute(new Regex(s"/game/upvote/$number", "gameId"), Upvote()),
@@ -29,7 +30,8 @@ object Gamedation {
     ),
     HttpPutMethodRoutes(
       HttpPathRoute("/game/submit", Submit()),
-      HttpPathRoute("/user/signup", SignUp())
+      HttpPathRoute("/user/signup", SignUp()),
+      HttpPathRoute(new Regex(s"/admin/curator/$string", "username"), AddCurator())
     )
   )
 

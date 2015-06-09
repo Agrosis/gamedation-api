@@ -1,7 +1,7 @@
 package com.gamedation.api.services.production
 
 import com.gamedation.api.database.DbMember
-import com.gamedation.api.models.{Status, Admin, Normal, Member}
+import com.gamedation.api.models._
 import com.gamedation.api.services.interfaces.MemberServiceComponent
 import com.gamedation.api.validators.WebToken
 import com.plasmaconduit.json.JsObject
@@ -43,6 +43,24 @@ trait ProductionMemberService extends MemberServiceComponent { this: ProductionS
       q.firstOption.map(u => {
         Member(u.id, Status.fromInt(u.status), u.username, u.email)
       })
+    }
+
+    override def getCurators(): List[Member] = database { implicit session =>
+      val q = for {
+        u <- tables.members if u.status === Curator.toInt
+      } yield u
+
+      q.list.map(u => {
+        Member(u.id, Status.fromInt(u.status), u.username, u.email)
+      })
+    }
+
+    override def makeCurator(username: String): Boolean = database { implicit session =>
+      val q = for {
+        u <- tables.members if u.username === username && u.status === Normal.toInt
+      } yield u.status
+
+      q.update(Curator.toInt) > 0
     }
 
     override def authenticate(email: String, password: String): Option[Member] = database { implicit session =>

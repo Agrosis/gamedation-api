@@ -15,6 +15,10 @@ trait MemberServiceComponent {
 
     def getMemberByEmail(email: String): Option[Member]
 
+    def getCurators(): List[Member]
+
+    def makeCurator(username: String): Boolean
+
     def authenticate(email: String, password: String): Option[Member]
 
     def register(username: String, password: String, email: String): Option[Member]
