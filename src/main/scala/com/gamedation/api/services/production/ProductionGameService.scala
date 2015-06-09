@@ -1,6 +1,8 @@
 package com.gamedation.api.services.production
 
-import com.gamedation.api.database.{DbUpvote, DbGameImage, DbGame}
+import java.util.{Calendar, GregorianCalendar}
+
+import com.gamedation.api.database.{DbFeaturedGame, DbUpvote, DbGameImage, DbGame}
 import com.gamedation.api.models._
 import com.gamedation.api.services.interfaces.GameServiceComponent
 
@@ -77,21 +79,9 @@ trait ProductionGameService extends GameServiceComponent { this: ProductionServi
         None
     }
 
-    override def getGamesFor(time: Long): List[Game] = database { implicit session =>
-      val q = for {
-        g <- tables.games
-      } yield g
-
-      q.list.flatMap(g => {
-        members.getMemberById(g.poster).map(p => {
-          Game(g.id, GameSite.fromInt(g.site), g.link, g.name, g.description, GamePlatforms(g.windows, g.mac, g.linux, g.browser, g.iOS, g.android), getImages(g.id), g.points, p)
-        })
-      })
-    }
-
     override def getLatestGames(): List[Game] = database { implicit session =>
       val q = for {
-        g <- tables.games if g.submitted >= (System.currentTimeMillis() - 604800000)
+        g <- tables.games.filter(g => tables.featuredGames.filter(f => f.gameId === g.id).length === 0) if g.submitted >= (System.currentTimeMillis() - 604800000)
       } yield g
 
       q.sortBy(_.id.desc).list.flatMap(g => {
@@ -112,6 +102,43 @@ trait ProductionGameService extends GameServiceComponent { this: ProductionServi
         case Curator => n < 10
         case Normal => n < 3
       }
+    }
+
+    override def getFeatured(time: Long): List[Game] = database { implicit session =>
+      val q = for {
+        f <- tables.featuredGames if f.time === time;
+        g <- tables.games if g.id === f.gameId
+      } yield g
+
+      q.sortBy(_.id.desc).list.flatMap(g => {
+        members.getMemberById(g.poster).map(p => {
+          Game(g.id, GameSite.fromInt(g.site), g.link, g.name, g.description, GamePlatforms(g.windows, g.mac, g.linux, g.browser, g.iOS, g.android), getImages(g.id), g.points, p)
+        })
+      })
+    }
+
+    override def featureGame(gameId: Long): Boolean = database { implicit session =>
+      val date = new GregorianCalendar()
+      date.set(Calendar.HOUR_OF_DAY, 0)
+      date.set(Calendar.MINUTE, 0)
+      date.set(Calendar.SECOND, 0)
+      date.set(Calendar.MILLISECOND, 0)
+
+      val time = date.getTimeInMillis + 86400000
+      if(tables.featuredGames.filter(_.gameId === gameId).exists.run) {
+        false
+      } else {
+        tables.featuredGames.insert(DbFeaturedGame(0, gameId, time))
+        true
+      }
+    }
+
+    override def isFeatured(gameId: Long): Boolean = database { implicit session =>
+      val q = for {
+        f <- tables.featuredGames if f.gameId === gameId
+      } yield f
+
+      q.list.size > 0
     }
 
   }

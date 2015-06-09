@@ -44,6 +44,7 @@ trait Database {
   class Tables() {
 
     val comments = TableQuery[Comments]
+    val featuredGames = TableQuery[FeaturedGames]
     val games = TableQuery[Games]
     val gameImages = TableQuery[GameImages]
     val members = TableQuery[Members]

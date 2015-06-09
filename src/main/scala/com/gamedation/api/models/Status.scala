@@ -2,11 +2,13 @@ package com.gamedation.api.models
 
 sealed trait Status {
 
-  def toInt: Int = this match {
+  def toInt(): Int = this match {
     case Normal => 1
     case Curator => 2
     case Admin => 3
   }
+
+  def isCurator(): Boolean = toInt >= 2
 
 }
 

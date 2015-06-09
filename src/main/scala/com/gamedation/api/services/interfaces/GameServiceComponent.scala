@@ -22,11 +22,15 @@ trait GameServiceComponent {
 
     def addImage(game: Long, link: String): Option[Long]
 
-    def getGamesFor(time: Long): List[Game]
-
     def getLatestGames(): List[Game]
 
     def canUploadGame(member: Member): Boolean
+
+    def getFeatured(time: Long): List[Game]
+
+    def featureGame(gameId: Long): Boolean
+
+    def isFeatured(gameId: Long): Boolean
 
   }
 
