@@ -19,19 +19,27 @@ final case class Games() extends Controller {
     date.set(Calendar.SECOND, 0)
     date.set(Calendar.MILLISECOND, 0)
 
-    val time = date.getTimeInMillis
+    val time = date.getTimeInMillis + 86400000
     val t2 = time - 86400000
-    val t3 = time - 86400000
+    val t3 = t2 - 86400000
 
     request.user match {
       case m: Member => {
         PayloadSuccess(JsObject(
-          "games" -> request.env.games.getFeatured(time).map(g => g.toJson(request.env.games.hasUpvoted(g.id, m.id)))
+          "games" -> List(
+            request.env.games.getFeatured(time).map(g => g.toJson(request.env.games.hasUpvoted(g.id, m.id))),
+            request.env.games.getFeatured(t2).map(g => g.toJson(request.env.games.hasUpvoted(g.id, m.id))),
+            request.env.games.getFeatured(t3).map(g => g.toJson(request.env.games.hasUpvoted(g.id, m.id)))
+          )
         ))
       }
       case Guest => {
         PayloadSuccess(JsObject(
-          "games" -> request.env.games.getFeatured(time).map(g => g.toJson())
+          "games" -> List(
+            request.env.games.getFeatured(time).map(g => g.toJson()),
+            request.env.games.getFeatured(t2).map(g => g.toJson()),
+            request.env.games.getFeatured(t3).map(g => g.toJson())
+          )
         ))
       }
     }

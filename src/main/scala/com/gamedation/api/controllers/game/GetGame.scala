@@ -14,17 +14,20 @@ final case class GetGame() extends Controller {
     req.pathVars.get("gameId").map(_.toInt).flatMap(gameId => request.env.games.getGameById(gameId)) match {
       case Some(game) => {
         CheckFeatured(game.id, request.user) { () =>
+          val comments = request.env.games.getComments(game.id).map(_.toJson())
           request.user match {
             case m: Member => {
               PayloadSuccess(JsObject(
                 "game" -> game.toJson(request.env.games.hasUpvoted(game.id, m.id)),
-                "upvoters" -> request.env.games.getUpvoters(game.id).flatMap(id => request.env.members.getMemberById(id)).map(_.avatar(64))
+                "upvoters" -> request.env.games.getUpvoters(game.id).flatMap(id => request.env.members.getMemberById(id)).map(_.avatar(64)),
+                "comments" -> comments
               ))
             }
             case Guest => {
               PayloadSuccess(JsObject(
                 "game" -> game.toJson(),
-                "upvoters" -> request.env.games.getUpvoters(game.id).flatMap(id => request.env.members.getMemberById(id)).map(_.avatar(64))
+                "upvoters" -> request.env.games.getUpvoters(game.id).flatMap(id => request.env.members.getMemberById(id)).map(_.avatar(64)),
+                "comments" -> comments
               ))
             }
           }

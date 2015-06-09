@@ -2,7 +2,7 @@ package com.gamedation.api.services.production
 
 import java.util.{Calendar, GregorianCalendar}
 
-import com.gamedation.api.database.{DbFeaturedGame, DbUpvote, DbGameImage, DbGame}
+import com.gamedation.api.database._
 import com.gamedation.api.models._
 import com.gamedation.api.services.interfaces.GameServiceComponent
 
@@ -80,8 +80,9 @@ trait ProductionGameService extends GameServiceComponent { this: ProductionServi
     }
 
     override def getLatestGames(): List[Game] = database { implicit session =>
+      val time = System.currentTimeMillis()
       val q = for {
-        g <- tables.games.filter(g => tables.featuredGames.filter(f => f.gameId === g.id).length === 0) if g.submitted >= (System.currentTimeMillis() - 604800000)
+        g <- tables.games.filter(g => tables.featuredGames.filter(f => f.gameId === g.id && f.time <= time).length === 0) if g.submitted >= (time - 604800000)
       } yield g
 
       q.sortBy(_.id.desc).list.flatMap(g => {
@@ -139,6 +140,45 @@ trait ProductionGameService extends GameServiceComponent { this: ProductionServi
       } yield f
 
       q.list.size > 0
+    }
+
+    override def getComments(gameId: Long): List[Comment] = database { implicit session =>
+      val q = for {
+        c <- tables.comments if c.gameId === gameId
+      } yield c
+
+      q.sortBy(_.id.desc).list.flatMap(g => {
+        members.getMemberById(g.member).map(p => {
+          Comment(g.id, g.game, p, g.text, g.time, getChildrenComments(g.id))
+        })
+      })
+    }
+
+    override def getChildrenComments(comment: Long): List[Comment] = database { implicit session =>
+      val q = for {
+        c <- tables.comments if c.parentId === comment
+      } yield c
+
+      q.sortBy(_.id.desc).list.flatMap(g => {
+        members.getMemberById(g.member).map(p => {
+          Comment(g.id, g.game, p, g.text, g.time, List())
+        })
+      })
+    }
+
+    override def comment(memberId: Long, gameId: Long, parent: Option[Long], text: String): Option[Comment] = database { implicit session =>
+      val time = System.currentTimeMillis()
+      val id = (tables.comments returning tables.comments.map(_.id)) += DbComment(0, gameId, memberId, parent, text, time)
+
+      members.getMemberById(memberId).map(m => Comment(id, gameId, m, text, time, List()))
+    }
+
+    override def canComment(memberId: Long): Boolean = database { implicit session =>
+      val q = for(
+        c <- tables.comments if c.memberId === memberId && c.time >= (System.currentTimeMillis() - 86400000)
+      ) yield c
+
+      q.list.length < 20
     }
 
   }

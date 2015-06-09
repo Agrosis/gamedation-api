@@ -17,7 +17,7 @@ final case class Member(id: Long, status: Status, username: String, email: Strin
     "id" -> id,
     "status" -> status.toInt,
     "username" -> username,
-    "email" -> email,
+//    "email" -> email,
     "avatar" -> avatar(64)
   )
 

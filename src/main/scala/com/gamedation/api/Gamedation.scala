@@ -31,7 +31,9 @@ object Gamedation {
     HttpPutMethodRoutes(
       HttpPathRoute("/game/submit", Submit()),
       HttpPathRoute("/user/signup", SignUp()),
-      HttpPathRoute(new Regex(s"/admin/curator/$string", "username"), AddCurator())
+      HttpPathRoute(new Regex(s"/admin/curator/$string", "username"), AddCurator()),
+      HttpPathRoute(new Regex(s"/game/comment/$number/", "gameId"), Comment()),
+      HttpPathRoute(new Regex(s"/game/comment/$number/$number", "gameId", "parentId"), Comment())
     )
   )
 

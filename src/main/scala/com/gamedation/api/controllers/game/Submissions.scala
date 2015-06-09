@@ -12,7 +12,9 @@ final case class Submissions() extends Controller {
   override def action(implicit req: HttpRequest): Box[Throwable, HttpResponse] = InjectedAction { implicit request =>
     IsCurator { c =>
       PayloadSuccess(JsObject(
-        "games" -> request.env.games.getLatestGames.map(g => g.toJson(request.env.games.hasUpvoted(g.id, c.id)))
+        "games" -> List(
+          request.env.games.getLatestGames.map(g => g.toJson(request.env.games.hasUpvoted(g.id, c.id)))
+        )
       ))
     }
   }

@@ -1,6 +1,6 @@
 package com.gamedation.api.services.interfaces
 
-import com.gamedation.api.models.{Member, GameSite, Game}
+import com.gamedation.api.models.{Comment, Member, GameSite, Game}
 
 trait GameServiceComponent {
 
@@ -31,6 +31,14 @@ trait GameServiceComponent {
     def featureGame(gameId: Long): Boolean
 
     def isFeatured(gameId: Long): Boolean
+
+    def getComments(gameId: Long): List[Comment]
+
+    def getChildrenComments(commentId: Long): List[Comment]
+
+    def comment(memberId: Long, gameId: Long, parent: Option[Long], text: String): Option[Comment]
+
+    def canComment(memberId: Long): Boolean
 
   }
 
