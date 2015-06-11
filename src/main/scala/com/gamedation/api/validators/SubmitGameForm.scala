@@ -2,7 +2,6 @@ package com.gamedation.api.validators
 
 import com.plasmaconduit.json.{JsObject, JsValue, JsReader}
 import com.plasmaconduit.validation.{Success, Failure, Validation}
-import org.apache.commons.validator.routines.UrlValidator
 
 final case class SubmitGameForm(link: String,
                                 name: String,
@@ -22,7 +21,7 @@ object SubmitGameForm {
     override type JsReaderFailure = String
 
     private def validateLink(link: String): Option[String] = {
-      if(new UrlValidator(Array("http", "https")).isValid(link)) Some(link)
+      if(validLink(link)) Some(link)
       else None
     }
 
@@ -37,10 +36,11 @@ object SubmitGameForm {
     }
 
     private def validateImages(images: List[String]): Option[List[String]] = {
-      val url = new UrlValidator(Array("http", "https"))
-      if(images.length > 0 && images.length <= 6 && images.filter(l => !url.isValid(l)).length == 0) Some(images)
+      if(images.length > 0 && images.length <= 6 && images.filter(l => !validLink(l)).length == 0) Some(images)
       else None
     }
+
+    private def validLink(link: String): Boolean = link.startsWith("http") || link.startsWith("https")
 
     override def read(value: JsValue): Validation[SubmitGameFormJsReader.JsReaderFailure, SubmitGameForm] = value match {
       case JsObject(o) => {
