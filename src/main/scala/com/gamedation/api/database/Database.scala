@@ -8,7 +8,7 @@ import scala.slick.driver.MySQLDriver.simple._
 
 trait Database {
 
-  val config = JsonConfig.loadFromFile("./conf/gamedation.json")
+  val config = JsonConfig.loadFromFile("./conf/api.json")
 
   val db = Database.forURL(
     url      = config.flatMap(_.getString("db.url")).getOrElse(""),
@@ -25,7 +25,7 @@ trait Database {
 
   def initialize(): Validation[Throwable, Int] = {
     for (
-      config <- JsonConfig.loadFromFile("./conf/gamedation.json");
+      config <- JsonConfig.loadFromFile("./conf/api.json");
       driver <- config.getString("db.driver");
       url <- config.getString("db.url");
       user <- config.getString("db.user");

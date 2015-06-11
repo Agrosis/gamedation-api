@@ -11,10 +11,15 @@ object CommentForm {
 
     override type JsReaderFailure = String
 
+    private def validateText(text: String): Option[String] = {
+      if(text.length > 0 && text.length <= 300) Some(text)
+      else None
+    }
+
     override def read(value: JsValue): Validation[CommentFormJsReader.JsReaderFailure, CommentForm] = value match {
       case JsObject(o) => {
         val f = for (
-          text <- o.get("text").flatMap(_.as[String].toOption)
+          text <- o.get("text").flatMap(_.as[String].toOption).flatMap(validateText)
         ) yield {
           CommentForm(text)
         }

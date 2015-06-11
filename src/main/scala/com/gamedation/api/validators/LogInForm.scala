@@ -11,11 +11,16 @@ object LogInForm {
 
     override type JsReaderFailure = String
 
+    private def validateInput(input: String): Option[String] = {
+      if(input.length > 0) Some(input)
+      else None
+    }
+
     override def read(value: JsValue): Validation[LogInFormJsReader.JsReaderFailure, LogInForm] = value match {
       case JsObject(o) => {
         val f = for (
-          email <- o.get("email").flatMap(_.as[String].toOption);
-          password <- o.get("password").flatMap(_.as[String].toOption)
+          email <- o.get("email").flatMap(_.as[String].toOption).flatMap(validateInput);
+          password <- o.get("password").flatMap(_.as[String].toOption).flatMap(validateInput)
         ) yield {
           LogInForm(email, password)
         }
